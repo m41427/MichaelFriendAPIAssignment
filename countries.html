@@ -8,16 +8,13 @@
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
+            background-image: url('Assets/Globe.png');
         }
         .autocomplete-suggestions {
             border: 1px solid #ccc;
             max-height: 150px;
             overflow-y: auto;
             position: absolute;
-            background-image: url('Assets/globe.png');
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-position: center;
             background: white;
             z-index: 1000;
         }
@@ -32,9 +29,16 @@
 </head>
 <body>
     <h1>Michael Friend API Assignment: Country Information</h1>
-    <label for="countrySearch">Enter a Country Name to Learn More:</label>
+    
+    <style>
+        #countrySearchLabel {
+            text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
+        }
+    </style>
+    <label id="countrySearchLabel" for="countrySearch">Enter a Country Name to Learn More:</label>
     <input type="text" id="countrySearch" placeholder="Type a country name">
     <div id="autocomplete" class="autocomplete-suggestions"></div>
+    
 
     <script>
         let data = [];
@@ -93,10 +97,10 @@
                             <p style="color: black; font-weight: bold; font-size: larger; background-color: transparent;"><strong>Status:</strong> <span style="background-color: white;">${suggestion.status}</span></p>
                             <p style="color: black; font-weight: bold; font-size: larger; background-color: transparent;"><strong>Currencies:</strong> <span style="background-color: white;">${suggestion.currencies}</span></p>
                             <p style="color: black; font-weight: bold; font-size: larger; background-color: transparent;"><strong>Capital:</strong> <span style="background-color: white;">${suggestion.capital}</span></p>
-                            <p style="color: black; font-weight: bold; font-size: larger; background-color: transparent;"><strong>Alt Spellings:</strong> ${suggestion.altSpellings}</p>
-                            <p style="color: black; font-weight: bold; font-size: larger; background-color: transparent;"><strong>Subregion:</strong> ${suggestion.subregion}</p>
-                            <p style="color: black; font-weight: bold; font-size: larger; background-color: transparent;"><strong>Languages:</strong> ${suggestion.languages}</p>
-                            <p style="color: black; font-weight: bold; font-size: larger; background-color: transparent;"><strong>Population:</strong> ${suggestion.population}</p>
+                            <p style="color: black; font-weight: bold; font-size: larger; background-color: transparent;"><strong>Alt Spellings:</strong> <span style="background-color: white;">${suggestion.altSpellings}</span></p>
+                            <p style="color: black; font-weight: bold; font-size: larger; background-color: transparent;"><strong>Subregion:</strong> <span style="background-color: white;">${suggestion.subregion}</span></p>
+                            <p style="color: black; font-weight: bold; font-size: larger; background-color: transparent;"><strong>Languages:</strong> <span style="background-color: white;">${suggestion.languages}</span></p>
+                            <p style="color: black; font-weight: bold; font-size: larger; background-color: transparent;"><strong>Population:</strong> <span style="background-color: white;">${suggestion.population}</span></p>
                         `;
 
                         // Clear previous details and append new details

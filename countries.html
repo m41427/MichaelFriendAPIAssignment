@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Country Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .autocomplete-suggestions {
+            border: 1px solid #ccc;
+            max-height: 150px;
+            overflow-y: auto;
+            position: absolute;
+            background: white;
+            z-index: 1000;
+        }
+        .autocomplete-suggestion {
+            padding: 10px;
+            cursor: pointer;
+        }
+        .autocomplete-suggestion:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Michael Friend API Assignment: Country Information</h1>
+    <label for="countrySearch">Enter a Country Name to Learn More:</label>
+    <input type="text" id="countrySearch" placeholder="Type a country name">
+    <div id="autocomplete" class="autocomplete-suggestions"></div>
+
+    <script>
+        let data = [];
+
+        // Fetch data from the API
+        fetch('https://restcountries.com/v3.1/all')
+            .then(response => response.json())
+            .then(countries => {
+                data = countries;
+            })
+            .catch(error => console.error('Error fetching countries:', error));
+
+        const searchInput = document.getElementById('countrySearch');
+        const autocompleteDiv = document.getElementById('autocomplete');
+
+        // Event listener for input changes
+        searchInput.addEventListener('input', () => {
+            const query = searchInput.value.toLowerCase();
+            autocompleteDiv.innerHTML = ''; // Clear previous suggestions
+
+            if (query) {
+                const suggestions = data
+                    .filter(country => country.name.common.toLowerCase().includes(query))
+                    .map(country => ({
+                        name: country.name.common,
+                        status: country.independent ? 'Independent' : 'Not Independent',
+                        currencies: country.currencies ? Object.keys(country.currencies).join(', ') : 'N/A',
+                        capital: country.capital ? country.capital.join(', ') : 'N/A',
+                        altSpellings: country.altSpellings ? country.altSpellings.join(', ') : 'N/A',
+                        subregion: country.subregion || 'N/A',
+                        languages: country.languages ? Object.values(country.languages).join(', ') : 'N/A',
+                        population: country.population.toLocaleString(),
+                        flag: country.flags.png
+                    }));
+
+                suggestions.forEach(suggestion => {
+                    const suggestionDiv = document.createElement('div');
+                    suggestionDiv.classList.add('autocomplete-suggestion');
+                    suggestionDiv.textContent = suggestion.name;
+
+                    // Add click event to autocomplete suggestion
+                    suggestionDiv.addEventListener('click', () => {
+                        searchInput.value = suggestion.name;
+                        autocompleteDiv.innerHTML = ''; // Clear suggestions
+
+                        // Change background to the country's flag
+                        document.body.style.backgroundImage = `url(${suggestion.flag})`;
+                        document.body.style.backgroundSize = 'cover';
+                        document.body.style.backgroundRepeat = 'no-repeat';
+                        document.body.style.backgroundPosition = 'center';
+
+                        // Display detailed information
+                        const detailsDiv = document.createElement('div');
+                        detailsDiv.innerHTML = `
+                            <h2 style="color: black; font-weight: bold; font-size: larger; background-color: transparent; text-shadow: 1px 1px 2px white;">${suggestion.name}</h2>
+                            <p style="color: black; font-weight: bold; font-size: larger; background-color: transparent;"><strong>Status:</strong> <span style="background-color: white;">${suggestion.status}</span></p>
+                            <p style="color: black; font-weight: bold; font-size: larger; background-color: transparent;"><strong>Currencies:</strong> <span style="background-color: white;">${suggestion.currencies}</span></p>
+                            <p style="color: black; font-weight: bold; font-size: larger; background-color: transparent;"><strong>Capital:</strong> <span style="background-color: white;">${suggestion.capital}</span></p>
+                            <p style="color: black; font-weight: bold; font-size: larger; background-color: transparent;"><strong>Alt Spellings:</strong> ${suggestion.altSpellings}</p>
+                            <p style="color: black; font-weight: bold; font-size: larger; background-color: transparent;"><strong>Subregion:</strong> ${suggestion.subregion}</p>
+                            <p style="color: black; font-weight: bold; font-size: larger; background-color: transparent;"><strong>Languages:</strong> ${suggestion.languages}</p>
+                            <p style="color: black; font-weight: bold; font-size: larger; background-color: transparent;"><strong>Population:</strong> ${suggestion.population}</p>
+                        `;
+
+                        // Clear previous details and append new details
+                        const existingDetails = document.querySelector('.country-details');
+                        if (existingDetails) {
+                            existingDetails.remove();
+                        }
+                        detailsDiv.classList.add('country-details');
+                        document.body.appendChild(detailsDiv);
+                    });
+
+                    autocompleteDiv.appendChild(suggestionDiv);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
